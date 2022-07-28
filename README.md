@@ -1,8 +1,8 @@
 # NetFoundry Quick Start Guide
 
-This Quick Start Guide is intended to provide an example of how Oracle Cloud Infrastructure users can quickly deploy NetFoundry Edge Router software within OCI. This quickstart template can be used to accelerate the deployment of NetFoundry Edge Routers into your tenancy by creating a Resource Manager Deployment and saving the associated Terraform file for repeatable use.
+This Quick Start Guide is intended to provide an example of how Oracle Cloud Infrastructure users can quickly deploy NetFoundry Edge Router software within OCI. This quickstart template can be used to accelerate the deployment of NetFoundry Edge Routers into your tenancy with a customized Terraform deployment.
 
-This quickstart guide will provide links that deploy into OCI and configure resources within the NetFoundry NaaS Platform.
+This quickstart guide will provide links to the repositories and associated documentation for deployment. The deployment scripts also include the implemnetation of a Load Balancer for NetFoundry network ingress for non-zitified hosts.
 
 ## Oracle Cloud with NetFoundry
 
@@ -24,17 +24,7 @@ For more information on AppWANs and SDN overlay networking, see AppWAN 101: [Wha
 
 
 
-## Resource Manager Deployment
 
-This Quick Start uses [OCI Resource Manager](https://docs.cloud.oracle.com/iaas/Content/ResourceManager/Concepts/resourcemanager.htm) to make deployment easy, sign up for an [OCI account](https://cloud.oracle.com/en_US/tryit) if you don't have one, and just click the button below:
-
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://console.us-ashburn-1.oraclecloud.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/oracle-quickstart/oci-quickstart-template/archive/master.zip)
-
-After logging into the console you'll be taken through the same steps described
-in the [Deploy](#deploy) section below.
-
-
-Note, if you use this template to create another repo you'll need to change the link for the button to point at your repo.
 
 ## Local Development
 
@@ -136,52 +126,12 @@ Archive:  dist/orm.zip
 |AVAILABILITY DOMAIN         | Availability Domain|
 |PUBLIC SSH KEY STRING       | RSA PUBLIC SSH key string used for sign in to the OS|
 
-> Virtual Cloud Network
 
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|NETWORK COMPARTMENT         | Compartment for all Virtual Cloud Network resources|
-|NETWORK STRATEGY            | `Create New VCN and Subnet`: Create new network resources during apply. <br> `Use Existing VCN and Subnet`: Let user select pre-existent network resources.|
-|CONFIGURATION STRATEGY      | `Use Recommended Configuration`: Use default configuration defined by the Terraform template. <br> `Customize Network Configuration`: Allow user to customize network configuration such as name, dns label, cidr block for VCN and Subnet.|
 
-> Virtual Cloud Network - Customize Network Configuration
 
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|NAME                        | VCN Display Name|
-|DNS LABEL                   | VCN DNS LABEL|
-|CIDR BLOCK                  | The CIDR of the new Virtual Cloud Network (VCN). If you plan to peer this VCN with another VCN, the VCNs must not have overlapping CIDRs.|
 
-> Simple Subnet (visible only when `Customize Network Configuration` is selected)
 
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|SUBNET TYPE                 | `Public Subnet` or `Private Subnet`|
-|NAME                        | Subnet Display Name|
-|DNS LABEL                   | Subnet DNS LABEL|
-|CIDR BLOCK                  | The CIDR of the Subnet. Should not overlap with any other subnet CIDRs|
-|NETWORK SECURITY GROUP CONFIGURATION| `Use Recommended Configuration`: Use default configuration defined by the Terraform template. <br> `Customize Network Security Group`: Allow user to customize some basic network security group settings.|
-
-> Network Security Group (visible only when `Customize Network Security Group` is selected)
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|NAME                        | NSG Display Name|
-|ALLOWED INGRESS TRAFFIC (CIDR BLOCK)| WHITELISTED CIDR BLOCK for ingress traffic|
-|SSH PORT NUMBER             | Default SSH PORT for ingress traffic|
-|HTTP PORT NUMBER            | Default HTTP PORT for ingress traffic|
-|HTTPS PORT NUMBER           | Default HTTPS PORT for ingress traffic|
-
-> Additional Configuration Options
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|TAG KEY NAME                | Free-form tag key name|
-|TAG VALUE                   | Free-form tag value|
-
-4. Click Next and Review the configuration.
-5. Click Create button to confirm and create your ORM Stack.
-6. On Stack Details page, you can now run `Terraform` commands to manage your infrastructure. You typically start with a plan then run apply to create and make changes to the infrastructure. More details below:
+ infrastructure. You typically start with a plan then run apply to create and make changes to the infrastructure. More details below:
 
 |      TERRAFORM ACTIONS     |           DESCRIPTION                                                 |
 |----------------------------|-----------------------------------------------------------------------|
@@ -189,55 +139,17 @@ Archive:  dist/orm.zip
 |Apply                       | `terraform apply` is used to apply the changes required to reach the desired state of the configuration described by the template.|
 |Destroy                     | `terraform destroy` is used to destroy the Terraform-managed infrastructure.|
 
-## Customize for Marketplace
 
-In case you wanted to make changes to this template to use a Marketplace image rather than a platform image or custom image, you need to make the following changes.
 
-1. Configure Marketplace listing variables on [`variables.tf`](./variables.tf).
 
-|      VARIABLES             |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|mp_subscription_enabled     | Enable subscription to Marketplace.|
-|mp_listing_id               | Marketplace App Catalog Listing OCID.|
-|mp_listing_resource_id      | Marketplace Listing Image OCID.|
-|mp_listing_resource_version | Marketplace Listing Package/Resource Version (Reference value)|
-
-2. Modify [`compute.tf`](./compute.tf) set `source_details` to refer to `local.compute_image_id` rather than `platform_image_id`. The `local.compute_image_id` holds the logic to either refer to the marketplace image or a custom image, based on the `mp_subscription_enabled` flag.
 
 ```hcl
-resource "oci_core_instance" "simple-vm" {
-  availability_domain = local.availability_domain
-  compartment_id      = var.compute_compartment_ocid
-  display_name        = var.vm_display_name
-  shape               = var.vm_compute_shape
 
-  dynamic "shape_config" {
-    for_each = local.is_flex_shape
-      content {
-        ocpus = shape_config.value
-      }
-  }
-
-
-  create_vnic_details {
-    subnet_id              = local.use_existing_network ? var.subnet_id : oci_core_subnet.simple_subnet[0].id
-    display_name           = var.subnet_display_name
-    assign_public_ip       = local.is_public_subnet
-    hostname_label         = var.hostname_label
-    skip_source_dest_check = false
-    nsg_ids                = [oci_core_network_security_group.simple_nsg.id]
-  }
-
-  source_details {
-    source_type = "image"
-    #use a marketplace image or custom image:
-    source_id   = local.compute_image_id
-  }
 
 ```
 2. Modify [`oci_images.tf`](./oci_images.tf) set `marketplace_source_images` map variable to refer to the marketplace images your Stack will launch.
 
-```hcl
+```
 
 variable "marketplace_source_images" {
   type = map(object({
