@@ -25,12 +25,50 @@ For more information on AppWANs and SDN overlay networking, see AppWAN 101: [Wha
 
 
 
-
-## Local Development
+## Deployment
 
 First off we'll need to do some pre deploy setup.  That's all detailed [here](https://github.com/oracle/oci-quickstart-prerequisites).
 
-Note, the instructions below build a `.zip` file from you local copy for use in ORM.
+
+Next: Lets start with the NetFoundry Platform.
+
+1. Sign up for NetFoundry Platform account [here](https://www.netfoundry.io/signup). The "Teams" account is free forever with some limitations to a single region and 10 endpoints. For this guide, we will be utilizing the NetFoundry orchestration platform. Once your account is created, administrators will have the ability to interact with the platform via API for all functions.
+
+![](images/signup.jpg)
+
+2. Once logged in, add a Network.The Network will be complete once the Globe in the upper left corner is Green.
+
+![](images/add_net_1.jpg)
+
+3. Add transit Edge Router. Name the Edge Router and give it an attribute of #transit, then select NetFoundry Hosted and select an OCI region where most users/resources are located and hit create. 
+
+![](images/edge_router.jpg)
+![](images/fabricrouter2.jpg)
+
+4. Add Edge Router Policy. Within the window, select the transit router from Step 3 and in the endpoints field type in #all and hit create.
+
+5. Next build 2 Customer Hosted Edge Routers within the NetFoundry Platform to be used for this quickstart guide. We will create 2 Edge Router identities for HA best practices and use them in our Terraform plan to deploy them to your OCI tenancy. Perhaps name them edgerouter-1-ha and edgerouter-2-ha. Once created you will record the key for each to be inserted into your Terraform plan.
+
+![](images/customer1.jpg)
+![](images/cust_reg.jpg)
+
+6. Once complete you should have:
+    * A Network
+    * 1 Transit Router and an Edge Router Policy with Transit Router and #all endpoints.
+    * 2 Customer Routers
+    
+    ![](images/complete.jpg)
+    
+    
+    
+
+
+
+
+
+
+
+a `.zip` file from you local copy for use in ORM.
 If you want to not use ORM and deploy with the terraform CLI you need to rename
 `provider.tf.cli -> provider.tf`. This is because authentication works slightly
 differently in ORM vs the CLI. This file is ignored by the build process below.
@@ -126,10 +164,41 @@ Archive:  dist/orm.zip
 |AVAILABILITY DOMAIN         | Availability Domain|
 |PUBLIC SSH KEY STRING       | RSA PUBLIC SSH key string used for sign in to the OS|
 
+> Virtual Cloud Network
 
+|          VARIABLE          |           DESCRIPTION                                                 |
+|----------------------------|-----------------------------------------------------------------------|
+|NETWORK COMPARTMENT         | Compartment for all Virtual Cloud Network resources|
+|NETWORK STRATEGY            | `Create New VCN and Subnet`: Create new network resources during apply. <br> `Use Existing VCN and Subnet`: Let user select pre-existent network resources.|
+|CONFIGURATION STRATEGY      | `Use Recommended Configuration`: Use default configuration defined by the Terraform template. <br> `Customize Network Configuration`: Allow user to customize network configuration such as name, dns label, cidr block for VCN and Subnet.|
 
+> Virtual Cloud Network - Customize Network Configuration
 
+|          VARIABLE          |           DESCRIPTION                                                 |
+|----------------------------|-----------------------------------------------------------------------|
+|NAME                        | VCN Display Name|
+|DNS LABEL                   | VCN DNS LABEL|
+|CIDR BLOCK                  | The CIDR of the new Virtual Cloud Network (VCN). If you plan to peer this VCN with another VCN, the VCNs must not have overlapping CIDRs.|
 
+> Simple Subnet (visible only when `Customize Network Configuration` is selected)
+
+|          VARIABLE          |           DESCRIPTION                                                 |
+|----------------------------|-----------------------------------------------------------------------|
+|SUBNET TYPE                 | `Public Subnet` or `Private Subnet`|
+|NAME                        | Subnet Display Name|
+|DNS LABEL                   | Subnet DNS LABEL|
+|CIDR BLOCK                  | The CIDR of the Subnet. Should not overlap with any other subnet CIDRs|
+|NETWORK SECURITY GROUP CONFIGURATION| `Use Recommended Configuration`: Use default configuration defined by the Terraform template. <br> `Customize Network Security Group`: Allow user to customize some basic network security group settings.|
+
+> Network Security Group (visible only when `Customize Network Security Group` is selected)
+
+|          VARIABLE          |           DESCRIPTION                                                 |
+|----------------------------|-----------------------------------------------------------------------|
+|NAME                        | NSG Display Name|
+|ALLOWED INGRESS TRAFFIC (CIDR BLOCK)| WHITELISTED CIDR BLOCK for ingress traffic|
+|SSH PORT NUMBER             | Default SSH PORT for ingress traffic|
+|HTTP PORT NUMBER            | Default HTTP PORT for ingress traffic|
+|HTTPS PORT NUMBER           | Default HTTPS PORT for ingress traffic|
 
  infrastructure. You typically start with a plan then run apply to create and make changes to the infrastructure. More details below:
 
