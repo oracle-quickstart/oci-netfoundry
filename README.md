@@ -69,11 +69,13 @@ Next: Lets start with the NetFoundry Platform.
 **Prerequisites**
 * Terraform installed
 * OCI Provider API Key Based Authentication
+* **NOTE:** *if you are using a new dedicated CIDR for these resources. You will need to add the subnet to the Default Security List for Ingress. This will allow downstream hosts to Ingress the NetFoundry network via the HA Edge Routers installed in this guide.
 
 **Steps**
 
 1. Clone the repo and cd into the NetworkLoadBalancer/OCI directory
-2. Update the variables input file with your parameters
+
+2. Update the oci-netfoundry/NetworkLoadBalancer/OCI/tf-provider/input_vars.tfvars.json file with your parameters
 
 ```h
 vi tf-provider/input_vars.tfvars.json
@@ -88,7 +90,7 @@ vi tf-provider/input_vars.tfvars.json
 }
 ```
 
-3. Update the provider.tf file with your OCI information
+3. Update the oci-netfoundry/NetworkLoadBalancer/OCI/tf-provider/provider.tf file with your OCI information
 
 ```h
 vi tf-provider/provider.tf
@@ -122,9 +124,8 @@ you run "terraform init" in the future.
 Terraform has been successfully initialized!
 ```
 
-5. You may now begin working with Terraform. 
+5. You may now begin working with Terraform. Try running "terraform plan" to see any changes that are required for your infrastructure. 
 
-Try running "terraform plan" to see any changes that are required for your infrastructure. 
 ```
 terraform plan -var-file input_vars.tfvars.json
 ```
@@ -132,108 +133,16 @@ If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 
-
-
-
-### Deploy
-
-1. [Login](https://console.us-ashburn-1.oraclecloud.com/resourcemanager/stacks/create) to Oracle Cloud Infrastructure to import the stack
-    > `Home > Solutions & Platform > Resource Manager > Stacks > Create Stack`
-
-2. Upload the `orm.zip` and provide a name and description for the stack
-![Create Stack](./images/create_orm_stack.png)
-
-3. Configure the Stack. The UI will present the variables to the user dynamically, based on their selections. These are the configuration options:
-
-> Compute Configuration
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|COMPUTE COMPARTMENT         | Compartment for Compute resources, including Marketplace subscription |
-|INSTANCE NAME               | Compute instance name|
-|DNS HOSTNAME LABEL          | DNS Hostname|
-|COMPUTE SHAPE               | Compatible Compute shape|
-|FLEX SHAPE OCPUS            | Number of OCPUs, only available for VM.Standard.E3.Flex compute shape|
-|AVAILABILITY DOMAIN         | Availability Domain|
-|PUBLIC SSH KEY STRING       | RSA PUBLIC SSH key string used for sign in to the OS|
-
-> Virtual Cloud Network
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|NETWORK COMPARTMENT         | Compartment for all Virtual Cloud Network resources|
-|NETWORK STRATEGY            | `Create New VCN and Subnet`: Create new network resources during apply. <br> `Use Existing VCN and Subnet`: Let user select pre-existent network resources.|
-|CONFIGURATION STRATEGY      | `Use Recommended Configuration`: Use default configuration defined by the Terraform template. <br> `Customize Network Configuration`: Allow user to customize network configuration such as name, dns label, cidr block for VCN and Subnet.|
-
-> Virtual Cloud Network - Customize Network Configuration
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|NAME                        | VCN Display Name|
-|DNS LABEL                   | VCN DNS LABEL|
-|CIDR BLOCK                  | The CIDR of the new Virtual Cloud Network (VCN). If you plan to peer this VCN with another VCN, the VCNs must not have overlapping CIDRs.|
-
-> Simple Subnet (visible only when `Customize Network Configuration` is selected)
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|SUBNET TYPE                 | `Public Subnet` or `Private Subnet`|
-|NAME                        | Subnet Display Name|
-|DNS LABEL                   | Subnet DNS LABEL|
-|CIDR BLOCK                  | The CIDR of the Subnet. Should not overlap with any other subnet CIDRs|
-|NETWORK SECURITY GROUP CONFIGURATION| `Use Recommended Configuration`: Use default configuration defined by the Terraform template. <br> `Customize Network Security Group`: Allow user to customize some basic network security group settings.|
-
-> Network Security Group (visible only when `Customize Network Security Group` is selected)
-
-|          VARIABLE          |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|NAME                        | NSG Display Name|
-|ALLOWED INGRESS TRAFFIC (CIDR BLOCK)| WHITELISTED CIDR BLOCK for ingress traffic|
-|SSH PORT NUMBER             | Default SSH PORT for ingress traffic|
-|HTTP PORT NUMBER            | Default HTTP PORT for ingress traffic|
-|HTTPS PORT NUMBER           | Default HTTPS PORT for ingress traffic|
-
- infrastructure. You typically start with a plan then run apply to create and make changes to the infrastructure. More details below:
-
-|      TERRAFORM ACTIONS     |           DESCRIPTION                                                 |
-|----------------------------|-----------------------------------------------------------------------|
-|Plan                        | `terraform plan` is used to create an execution plan. This command is a convenient way to check the execution plan prior to make any changes to the infrastructure resources.|
-|Apply                       | `terraform apply` is used to apply the changes required to reach the desired state of the configuration described by the template.|
-|Destroy                     | `terraform destroy` is used to destroy the Terraform-managed infrastructure.|
-
-
-
-
-
-```hcl
-
-
+6. Next we will deploy the plan.
 ```
-2. Modify [`oci_images.tf`](./oci_images.tf) set `marketplace_source_images` map variable to refer to the marketplace images your Stack will launch.
-
+terraform apply -var-file input_vars.tfvars.json
 ```
 
-variable "marketplace_source_images" {
-  type = map(object({
-    ocid = string
-    is_pricing_associated = bool
-    compatible_shapes = list(string)
-  }))
-  default = {
-    main_mktpl_image = {
-      ocid = "ocid1.image.oc1..<unique_id>"
-      is_pricing_associated = true
-      compatible_shapes = []
-    }
-    #Remove comment and add as many marketplace images that your stack references be replicated to other realms
-    #supporting_image = {
-    #  ocid = "ocid1.image.oc1..<unique_id>"
-    #  is_pricing_associated = false
-    #  compatible_shapes = ["VM.Standard2.2", "VM.Standard.E2.1.Micro"]
-    #}
-  }
-}
-
+7. To remove from OCI.
 ```
+terraform destroy -var-file input_vars.tfvars.json
+```
+**NOTE:** *You will also need to delete them from your NetFoundry console as the identity/registration key provided is one time use only.* 
 
-2. Run your tests using the Terraform CLI or build a new package and deploy on ORM.
+
+
