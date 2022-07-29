@@ -47,6 +47,9 @@ Next: Lets start with the NetFoundry Platform.
 
 4. Add Edge Router Policy. Within the window, select the transit router from Step 3 and in the endpoints field type in #all and hit create.
 
+![](images/er_policy1.jpg)
+![](images/er_policy2.jpg)
+
 5. Next build 2 Customer Hosted Edge Routers within the NetFoundry Platform to be used for this quickstart guide. We will create 2 Edge Router identities for HA best practices and use them in our Terraform plan to deploy them to your OCI tenancy. Perhaps name them edgerouter-1-ha and edgerouter-2-ha. Once created you will record the key for each to be inserted into your Terraform plan.
 
 ![](images/customer1.jpg)
