@@ -25,7 +25,7 @@ For more information on AppWANs and SDN overlay networking, see AppWAN 101: [Wha
 
 
 
-## Deployment
+## NetFoundry Platform Deployment
 
 First off we'll need to do some pre deploy setup.  That's all detailed [here](https://github.com/oracle/oci-quickstart-prerequisites).
 
@@ -64,27 +64,45 @@ Next: Lets start with the NetFoundry Platform.
     
     
     
+## Deploy NetFoundry Edge Routers into OCI VCN.
 
+**Prerequisites**
+* Terraform installed
+* OCI Provider API Key Based Authentication
 
+**Steps**
 
+1. Clone the repo and cd into the NetworkLoadBalancer/OCI directory
+2. Update the variables input file with your parameters
 
+```h
+vi tf-provider/input_vars.tfvars.json
 
+{
+    "region": "",
+    "compartment_id": "",
+    "nf_subnet_cidr": "",
+    "vcn_name": "",
+    "route_table_name": "",
+    "nf_router_registration_key_list": []
+}
+```
 
+3. Update the provider.tf file with your OCI information
 
-a `.zip` file from you local copy for use in ORM.
-If you want to not use ORM and deploy with the terraform CLI you need to rename
-`provider.tf.cli -> provider.tf`. This is because authentication works slightly
-differently in ORM vs the CLI. This file is ignored by the build process below.
+```h
+vi tf-provider/provider.tf
 
-Make sure you have terraform v0.14+ cli installed and accessible from your terminal.
+provider "oci" {
+  tenancy_ocid = "ocid for tenancy"
+  user_ocid = "ocid for your oci user."
+  private_key_path = "path to your private key e.g. /home/user/.oci/oci_api_key.pem"
+  fingerprint = "user fingerprint"
+  region = "desired region to place NetFoundry Edge Routers and Load Balancer"
+}
+```
 
-### Build
-
-Simply `build` your package and follow the [Resource Manager instructions](https://docs.cloud.oracle.com/en-us/iaas/Content/ResourceManager/Tasks/managingstacksandjobs.htm#console) for how to create a stack.  Prior to building the Stack, you may want to modify some parts of the deployment detailed below.
-
-In order to `build` the zip file with the latest changes you made to this code, you can simply go to [build-orm](./build-orm) folder and use terraform to generate a new zip file:
-
-At first time, you are required to initialize the terraform modules used by the template with  `terraform init` command:
+4. For the first deployment, you are required to initialize the terraform modules used by the template with  `terraform init` command:
 
 ```bash
 $ terraform init
@@ -102,48 +120,20 @@ so that Terraform can guarantee to make the same selections by default when
 you run "terraform init" in the future.
 
 Terraform has been successfully initialized!
+```
 
-You may now begin working with Terraform. Try running "terraform plan" to see
-any changes that are required for your infrastructure. All Terraform commands
-should now work.
+5. You may now begin working with Terraform. 
 
+Try running "terraform plan" to see any changes that are required for your infrastructure. 
+```
+terraform plan -var-file input_vars.tfvars.json
+```
 If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
-```
 
-Once terraform is initialized, just run `terraform apply` to generate ORM zip file.
 
-```bash
-$ terraform apply
 
-data.archive_file.generate_zip: Refreshing state...
-
-Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
-```
-
-This command will package the content of `simple` folder into a zip and will store it in the `build-orm\dist` folder. You can check the content of the file by running `unzip -l dist/orm.zip`:
-
-```bash
-$ unzip -l dist/orm.zip
-Archive:  dist/orm.zip
-  Length      Date    Time    Name
----------  ---------- -----   ----
-     1140  01-01-2049 00:00   compute.tf
-      680  01-01-2049 00:00   data_sources.tf
-     1632  01-01-2049 00:00   image_subscription.tf
-     1359  01-01-2049 00:00   locals.tf
-    13548  01-01-2049 00:00   marketplace.yaml
-     2001  01-01-2049 00:00   network.tf
-     2478  01-01-2049 00:00   nsg.tf
-      830  01-01-2049 00:00   oci_images.tf
-     1092  01-01-2049 00:00   outputs.tf
-       44  01-01-2049 00:00   scripts/example.sh
-     4848  01-01-2049 00:00   variables.tf
-      311  01-01-2049 00:00   versions.tf
----------                     -------
-    29963                     12 files
-```
 
 ### Deploy
 

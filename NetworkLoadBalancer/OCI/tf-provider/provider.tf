@@ -1,8 +1,7 @@
 provider "oci" {
-  tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaaa7t4qscet3bg5aygjrjdxakahwguwnpxyrosib3rhza7rdrfkdxa"
-  user_ocid = "ocid1.user.oc1..aaaaaaaazxgov5lqf2yg34u3ue3q5o7i2se6q2pmoiqsdve3jiyzbo4sffka"
-  private_key_path = "/home/ziggy/.oci/oci_api_key.pem"
-  fingerprint = "86:cb:c2:78:31:26:59:a6:95:f5:83:fe:11:da:d3:bc"
-  region = "us-ashburn-1"
+  tenancy_ocid = "ocid for tenancy"
+  user_ocid = "ocid for your oci user."
+  private_key_path = "path to your private key e.g. /home/user/.oci/oci_api_key.pem"
+  fingerprint = "user fingerprint"
+  region = "desired region to place NetFoundry Edge Routers and Load Balancer"
 }
-
