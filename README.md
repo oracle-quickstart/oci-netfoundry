@@ -104,7 +104,28 @@ provider "oci" {
 }
 ```
 
-4. For the first deployment, you are required to initialize the terraform modules used by the template with  `terraform init` command:
+4. You will need to update the path to the desired public key to deploy the NetFoundry Edge Routers. This can be edited in the tf-provider/root.tf file
+```
+vi tf-provider/root.tf
+
+module "compute1" {
+  depends_on = [
+    module.vcn1
+  ]
+  source = "../modules/m-oci-compute"
+  region = var.region
+  compartment_ocid = var.compartment_id
+  **er_ssh_public_key = "~/.ssh/id_rsa.pub"**
+  vcn_name = var.vcn_name
+  route_table_name = var.route_table_name
+  subnet_cidr = var.nf_subnet_cidr
+  er_reg_keys = var.nf_router_registration_key_list
+}
+```
+
+
+
+5. For the first deployment, you are required to initialize the terraform modules used by the template with  `terraform init` command:
 
 ```bash
 $ terraform init
@@ -124,7 +145,7 @@ you run "terraform init" in the future.
 Terraform has been successfully initialized!
 ```
 
-5. You may now begin working with Terraform. Try running "terraform plan" to see any changes that are required for your infrastructure. 
+6. You may now begin working with Terraform. Try running "terraform plan" to see any changes that are required for your infrastructure. 
 
 ```
 terraform plan -var-file input_vars.tfvars.json
@@ -133,12 +154,12 @@ If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 
-6. Next we will deploy the plan.
+7. Next we will deploy the plan.
 ```
 terraform apply -var-file input_vars.tfvars.json
 ```
 
-7. To remove from OCI.
+8. To remove from OCI.
 ```
 terraform destroy -var-file input_vars.tfvars.json
 ```
