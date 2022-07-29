@@ -104,24 +104,12 @@ provider "oci" {
 }
 ```
 
-4. You will need to update the path to the desired public key to deploy the NetFoundry Edge Routers. This can be edited in the tf-provider/root.tf file
+4. For SSH access and management, You will need to update the path to the desired public key to deploy the NetFoundry Edge Routers. This can be edited in the tf-provider/root.tf file. 
 ```
 vi tf-provider/root.tf
-
-module "compute1" {
-  depends_on = [
-    module.vcn1
-  ]
-  source = "../modules/m-oci-compute"
-  region = var.region
-  compartment_ocid = var.compartment_id
-  **er_ssh_public_key = "~/.ssh/id_rsa.pub"**
-  vcn_name = var.vcn_name
-  route_table_name = var.route_table_name
-  subnet_cidr = var.nf_subnet_cidr
-  er_reg_keys = var.nf_router_registration_key_list
-}
 ```
+![](images/public%20key.jpg)
+
 
 
 
