@@ -69,6 +69,7 @@ Next: Lets start with the NetFoundry Platform.
 **Prerequisites**
 * Terraform installed
 * OCI Provider API Key Based Authentication
+* Have SSH keys pub/pri created for access to servers.
 * **NOTE:** *if you are using a new dedicated CIDR for these resources. You will need to add the subnet to the Default Security List for Ingress. This will allow downstream hosts to Ingress the NetFoundry network via the HA Edge Routers installed in this guide.
 
 **Steps**
