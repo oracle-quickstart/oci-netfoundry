@@ -1,10 +1,8 @@
-user_ocid = "ocid1.user.oc1.."
-fingerprint = "1c.."
-private_key_path = "~/.oci/oci_api_key.pem"
-tenancy_ocid = "ocid1.tenancy.oc1.."
-region = "us-ashburn-1"
-
-compute_compartment_ocid = "ocid1.compartment.oc1."
-network_compartment_ocid = "ocid1.compartment.oc1."
-availability_domain_number = "1"
-ssh_public_key = "ssh-rsa AAA...H"
+{
+    "region": "us-ashburn-1",
+    "compartment_id": "your compartment ocid",
+    "nf_subnet_cidr": "dedicated subnet CIDR within VCN...e.g. 192.168.1.0/25",
+    "vcn_name": "Your VCN name",
+    "route_table_name": "The route table name for your VCN.",
+    "nf_router_registration_key_list": ["insert key from NF console Edge Router", "insert key from NF console Edge Router"]
+}
