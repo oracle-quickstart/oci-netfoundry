@@ -151,7 +151,31 @@ terraform apply -var-file input_vars.tfvars.json
 ```
 terraform destroy -var-file input_vars.tfvars.json
 ```
-**NOTE:** *You will also need to delete them from your NetFoundry console as the identity/registration key provided is one time use only.* 
+**NOTE:** *You will also need to delete the Edge Router constructs wfrom your NetFoundry console as the identity/registration key provided is one time use only.* 
 
 
+Additional Documentation for complete end to end examples and deployment configurations.
 
+[Oracle Blog - Establish connectivity to Oracle Autonomous Database with NetFoundry Zero Trust networking.](https://blogs.oracle.com/cloud-infrastructure/post/zero-trust-network-access-with-netfoundry)
+
+[Oracle Blog -- Connecting to OKE private API with NetFoundry networking](https://blogs.oracle.com/cloud-infrastructure/post/connecting-to-oke-private-api-with-netfoundry-networking)
+
+[Oracle Blog -- OpenZiti -- Information about NetFoundry open source version for public consumption](https://blogs.oracle.com/javamagazine/post/java-zero-trust-openziti)
+
+[Oracle Docs -- NetFoundry: Autonomous Data Warehouse deployment on Oracle Cloud Infrastructure](https://docs.oracle.com/en/solutions/netfoundry-adw-on-oci/index.html)
+
+[Oracle Docs -- Kubernetes integration on Oracle Cloud Infrastructure](https://docs.oracle.com/en/solutions/netfoundry-oke-on-oci/index.html)
+
+
+[Oracle Live Labs -- NetFoundry Setup on OCI](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=829)
+
+[Oracle Quickstart Guide -- (Coming soon!!!)](https://github.com/oracle-quickstart/oci-netfoundry)
+
+[NetFoundry Live Labs on GitHub - Spin up Your Network](https://github.com/ojbfive/oci-naas-ztna-netfoundry)
+
+[NetFoundry support guide -- How to use NetFoundry ZTNA platform with OCI.
+](https://support.netfoundry.io/hc/en-us/articles/360055462471-Getting-started-with-NetFoundry-Zero-Trust-Networking-Oracle-example-setup-)
+
+[NetFoundry support guide -- Configure NetFoundry Zero Trust Networking for Oracle Autonomous Database (ADW) private endpoint access.](https://support.netfoundry.io/hc/en-us/articles/360055772252-Configure-NetFoundry-Zero-Trust-Networking-for-Oracle-Autonomous-Database-ADW-private-endpoint-access-)
+
+[NetFoundry support guide -- Deploy NetFoundry Edge Routers in OCI from Marketplace image in your own tenancy.](https://support.netfoundry.io/hc/en-us/articles/360054992952-Deployment-Guide-for-Oracle-Cloud-Edge-Routers)
