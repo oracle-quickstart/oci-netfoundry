@@ -113,7 +113,8 @@ vi tf-provider/root.tf
 
 
 
-5. For the first deployment, you are required to initialize the terraform modules used by the template with  `terraform init` command:
+5. For the first deployment, you are required to initialize the terraform modules used by the template with  `terraform init` command: (cd into the NetworkLoadBalancer/OCI/tf-provider directory)
+
 
 ```bash
 $ terraform init
@@ -152,6 +153,15 @@ terraform apply -var-file input_vars.tfvars.json
 terraform destroy -var-file input_vars.tfvars.json
 ```
 **NOTE:** *You will also need to delete the Edge Router constructs wfrom your NetFoundry console as the identity/registration key provided is one time use only.* 
+
+**NOTE:** 
+
+
+
+
+
+
+
 
 
 Additional Documentation for complete end to end examples and deployment configurations.
