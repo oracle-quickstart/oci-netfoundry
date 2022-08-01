@@ -13,13 +13,12 @@ On the heels of the Pandemic, NetFoundry continues to innovate for the Enterpris
 Because NetFoundry is offered as a service, organizations can realize the agility and flexibility benefits of zero trust networking access in a fraction of the time and cost of implementing traditional VPNs or SD-WAN solutions. Ultimately, NetFoundry can transform your networking infrastructure and accelerate employee productivity in the next phase. The NetFoundry software is staged within the OCI Marketplace for easy deployment within any customer OCI region.
 
 The following graphic shows a sample cloud VCN with NetFoundry:
+
 ![](images/net_diag2.png)
 
-## Deploy the NetFoundry software in OCI for cloud connectivity
 
-![](images/1-2-3.jfif)
 
-For more information on AppWANs and SDN overlay networking, see AppWAN 101: [What is overlay networking?](https://netfoundry.io/appwan-101-what-is-overlay-networking/)
+
 
 
 
@@ -64,7 +63,7 @@ Next: Lets start with the NetFoundry Platform.
     
     
     
-## Deploy NetFoundry Edge Routers into OCI VCN.
+## OCI Deployment -- Place NetFoundry Edge Routers into your desired VCN.
 
 **Prerequisites**
 * Terraform installed
@@ -190,3 +189,5 @@ Additional Documentation for complete end to end examples and deployment configu
 [NetFoundry support guide -- Configure NetFoundry Zero Trust Networking for Oracle Autonomous Database (ADW) private endpoint access.](https://support.netfoundry.io/hc/en-us/articles/360055772252-Configure-NetFoundry-Zero-Trust-Networking-for-Oracle-Autonomous-Database-ADW-private-endpoint-access-)
 
 [NetFoundry support guide -- Deploy NetFoundry Edge Routers in OCI from Marketplace image in your own tenancy.](https://support.netfoundry.io/hc/en-us/articles/360054992952-Deployment-Guide-for-Oracle-Cloud-Edge-Routers)
+
+For more information on AppWANs and SDN overlay networking, see AppWAN 101: [What is overlay networking?](https://netfoundry.io/appwan-101-what-is-overlay-networking/)
